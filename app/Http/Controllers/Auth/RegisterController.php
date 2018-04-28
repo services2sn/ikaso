@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Repositories\UserRepository;
 use App\Http\Controllers\Controller;
+
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class RegisterController extends Controller
 {
@@ -51,7 +54,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'email' => 'bail|required|string|email|max:255|unique:users',
             'password' => 'bail|required|string|min:6|confirmed',
-        ], $this->validationMessages());
+        ], $this->validationErrorMessages());
     }
 
     /**
@@ -68,12 +71,25 @@ class RegisterController extends Controller
         ]);
     }
 
+        /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+        // Set last login datetime, when user is registered
+        UserRepository::where('email', $user->email)->update(['last_login' => Carbon::now()]);    
+    }
+
     /**
      * return register validation messages.
      *
      * @return array
      */
-    protected function validationMessages() {
+    protected function validationErrorMessages() {
         return [
             'email.required' => "L'adresse email est requise",
             'email.string' => "L'adresse email doit etre une chaine de caractères",

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Repositories\UserRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -38,11 +41,24 @@ class LoginController extends Controller
     }
 
     /**
-     * return login's validation messages.
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        // Set last login datetime, when user is logged in
+        UserRepository::where('email', $user->email)->update(['last_login' => Carbon::now()]);    
+    }
+
+    /**
+     * return login validation messages.
      *
      * @return array
      */
-    protected function validationMessages() {
+    protected function validationErrorMessages() {
         return [
             'email.required' => "L'adresse email est requise",
             'email.string' => "L'adresse email doit etre une chaine de caractères",

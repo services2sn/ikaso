@@ -35,7 +35,7 @@ class ForgotPasswordController extends Controller
      *
      * @return array
      */
-    protected function validationMessages() {
+    protected function validationErrorMessages() {
         return [
             'email.required' => "L'adresse email est requise",
             'email.email' => "L'adresse email est invalide"
