@@ -29,4 +29,16 @@ class ForgotPasswordController extends Controller
     {
         $this->middleware('guest');
     }
+
+    /**
+     * return forget password's validation messages.
+     *
+     * @return array
+     */
+    protected function validationMessages() {
+        return [
+            'email.required' => "L'adresse email est requise",
+            'email.email' => "L'adresse email est invalide"
+        ];
+    }
 }

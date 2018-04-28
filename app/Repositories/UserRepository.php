@@ -1,14 +1,21 @@
 <?php
 
-namespace App;
+namespace App\Repositories;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class UserRepository extends Authenticatable
 {
     use Notifiable;
 
+    /**
+     * The repository's table name.
+     *
+     * @var string
+     */
+    protected $table = 'users';
+    
     /**
      * The attributes that are mass assignable.
      *

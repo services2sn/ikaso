@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+use App\Repositories\UserRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -49,10 +49,9 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+            'email' => 'bail|required|string|email|max:255|unique:users',
+            'password' => 'bail|required|string|min:6|confirmed',
+        ], $this->validationMessages());
     }
 
     /**
@@ -63,10 +62,28 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+        return UserRepository::create([
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    /**
+     * return register validation messages.
+     *
+     * @return array
+     */
+    protected function validationMessages() {
+        return [
+            'email.required' => "L'adresse email est requise",
+            'email.string' => "L'adresse email doit etre une chaine de caractères",
+            'email.email' => "L'adresse email est invalide",
+            'email.max' => "L'adresse email est tres longue. Elle ne doit pas dépasser 255 caractères",
+            'email.unique' => "L'adresse email existe déjà",
+            'password.required' => 'Le mot de passe est requit',
+            'password.string' => 'Le mot de passe doit être une chaine de caractères',
+            'password.min' => "Le mot de passe est très court. Il doit être composé d'au moins 6 caractères",
+            'password.confirmed' => 'Le mot de passe est différent de sa confirmation'
+        ];
     }
 }
