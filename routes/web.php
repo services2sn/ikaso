@@ -11,16 +11,22 @@
 |
 */
 
-use Carbon\Carbon;
+/** Authentication */
+Auth::routes();
+Route::namespace('Auth\Account')->name('account.')->group(function() {
+    Route::get('account/created', 'ActivationController@created')->name('created');
+    Route::get('account/activate/{activationCode}', 'ActivationController@activate')->name('activate');
+    Route::get('account/email', 'ReturnActivationLink@showLinkRequestForm')->name('request');
+    Route::post('account/email', 'ReturnActivationLink@sendActivationLink')->name('email');
+});
 
+/** Users can access in routes below without being authenticated */
 Route::get('/', function() {
     return view('welcome');
 });
 
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/test', function() {
-    echo Carbon::now();
+/** Users must be authenticated to access in routes below and its account must be activated */
+Route::middleware(['auth', 'account'])->group(function() {
+    Route::get('/home', 'HomeController@index')->name('home');
 });
+

@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Repositories\UserRepository;
 use App\Http\Controllers\Controller;
+use App\Notifications\AccountCreated;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
 
 class RegisterController extends Controller
 {
@@ -31,7 +33,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/account/created';
 
     /**
      * Create a new controller instance.
@@ -71,7 +73,7 @@ class RegisterController extends Controller
         ]);
     }
 
-        /**
+    /**
      * The user has been registered.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -80,8 +82,9 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
-        // Set last login datetime, when user is registered
-        UserRepository::where('email', $user->email)->update(['last_login' => Carbon::now()]);    
+        $activationCode = Crypt::encryptString($user->email);
+        UserRepository::where('email', $user->email)->update(['activation_code' => $activationCode]);    
+        $user->notify(new AccountCreated($activationCode));
     }
 
     /**

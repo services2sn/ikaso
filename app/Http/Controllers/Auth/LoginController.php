@@ -50,7 +50,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         // Set last login datetime, when user is logged in
-        UserRepository::where('email', $user->email)->update(['last_login' => Carbon::now()]);    
+        UserRepository::where('email', $user->email)->update(['last_login' => Carbon::now()]);  
     }
 
     /**

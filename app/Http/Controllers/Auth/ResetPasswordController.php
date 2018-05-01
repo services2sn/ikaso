@@ -36,19 +36,4 @@ class ResetPasswordController extends Controller
     {
         $this->middleware('guest');
     }
-
-    // /**
-    //  * return reset password validation messages.
-    //  *
-    //  * @return array
-    //  */
-    // protected function validationErrorMessages() {
-    //     return [
-    //         'email.required' => "L'adresse email est requise",
-    //         'email.string' => "L'adresse email doit etre une chaine de caractères",
-    //         'email.email' => "L'adresse email est invalide",
-    //         'password.required' => 'Le mot de passe est requit',
-    //         'password.string' => 'Le mot de passe doit être une chaine de caractères',
-    //     ];
-    // }
 }
